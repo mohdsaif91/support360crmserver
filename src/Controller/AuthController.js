@@ -13,7 +13,10 @@ const loginUser = async (req, res) => {
     if (!user) {
       res.status(404).send("No User Found !");
     }
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (!bcrypt.compareSync(password, user.password)) {
+      console.log("authentication failed");
+      res.status(401).send("No User found !");
+    } else {
       const token = jwt.sign(
         { user_id: user._id, userName },
         process.env.TOKEN_KEY,
