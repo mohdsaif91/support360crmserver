@@ -7,5 +7,10 @@ const router = express.Router();
 
 router.post("/", CustomerController.addCustomer);
 router.get("/", verifyToken, CustomerController.getCustomer);
+router.post(
+  "/getFilteredCustomer",
+  verifyToken,
+  CustomerController.getAdminCustomer
+);
 
 module.exports = router;

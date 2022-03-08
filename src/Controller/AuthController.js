@@ -6,17 +6,19 @@ const signUpModal = require("../Modals/SignUpModal");
 const loginUser = async (req, res) => {
   try {
     const { userName, password } = req.body;
-
     if (!(userName && password)) {
       res.status(400).send("All input is required");
     }
     const user = await signUpModal.findOne({ userName });
+    if (!user) {
+      res.status(404).send("No User Found !");
+    }
     if (user && (await bcrypt.compare(password, user.password))) {
       const token = jwt.sign(
         { user_id: user._id, userName },
         process.env.TOKEN_KEY,
         {
-          expiresIn: "2h",
+          expiresIn: 120,
         }
       );
       res.status(200).send({ ...user._doc, token });
@@ -28,7 +30,6 @@ const loginUser = async (req, res) => {
 
 const signUpUser = async (req, res) => {
   try {
-    console.log(req.body);
     const { userName, password } = req.body;
 
     if (!(userName && password)) {

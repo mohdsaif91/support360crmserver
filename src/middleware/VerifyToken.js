@@ -4,7 +4,6 @@ const config = process.env;
 
 const verifyToken = (req, res, next) => {
   const token = req.headers["authorization"];
-  console.log(token, " token Value ");
   if (!token) {
     return res.status(403).send("A token is required for authentication");
   }
@@ -12,8 +11,7 @@ const verifyToken = (req, res, next) => {
     const decoded = jwt.verify(token, config.TOKEN_KEY);
     req.user = decoded;
   } catch (error) {
-    console.log(error);
-    return res.status(401).send("Invalid Token");
+    return res.status(401).send(error);
   }
   return next();
 };
