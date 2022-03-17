@@ -21,7 +21,7 @@ const loginUser = async (req, res) => {
         { user_id: user._id, userName },
         process.env.TOKEN_KEY,
         {
-          expiresIn: 120,
+          expiresIn: 60 * 30,
         }
       );
       res.status(200).send({ ...user._doc, token });
@@ -38,18 +38,16 @@ const signUpUser = async (req, res) => {
     if (!(userName && password)) {
       res.status(400).send("All input is required");
     }
-
     const encryptedPassword = await bcrypt.hash(password, 10);
-
     req.body.password = encryptedPassword;
-
-    await signUpModal.insertMany(req.body, (err, data) => {
+    signUpModal.insertMany(req.body, (err, data) => {
       if (err) {
         throw err;
       }
       res.status(201).send(req.body);
     });
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };

@@ -12,17 +12,15 @@ const addEmployee = async (req, res) => {
     if (!(userName && password)) {
       res.status(400).send("All input is required");
     }
-
     const user = await SignupModal.findOne({ userName });
-
     if (!user) {
       const encryptedPassword = await bcrypt.hash(password, 10);
       req.body.password = encryptedPassword;
       await SignupModal.insertMany(req.body, (err, data) => {
         if (err) throw err;
+        const token = tokenGeneration();
+        res.status(201).send({ token, data: data[0] });
       });
-      const token = tokenGeneration();
-      res.status(201).send({ message: "user Added", token });
     } else {
       res.status(409).send("User name exist !!");
     }
@@ -114,9 +112,44 @@ const getAllEmployee = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    await SignupModal.findByIdAndUpdate(
+      { _id: req.body._id },
+      { $set: req.body },
+      (err, data) => {
+        if (err) throw "update operation failed";
+        if (data) {
+          res.status(200).send(req.body);
+        }
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    // res.status(500).send(error);
+  }
+};
+
+const removeEmployee = async (req, res) => {
+  try {
+    const deletedEmployee = await SignupModal.findByIdAndDelete({
+      _id: req.body.id,
+    });
+    if (!deletedEmployee) {
+      res.status(400).send(req.body.id);
+    }
+    res.status(200).send(req.body.id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+};
+
 module.exports = {
   addEmployee,
   getAllEmployee,
   getDailyData,
   getEmployeeAddedCustomer,
+  removeEmployee,
+  updateProfile,
 };
