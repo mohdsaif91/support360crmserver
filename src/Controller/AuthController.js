@@ -52,7 +52,30 @@ const signUpUser = async (req, res) => {
   }
 };
 
+const updatePassword = async (req, res) => {
+  try {
+    if (!req.body.employeeId) {
+      res.status(400).send("No Id Provided");
+    }
+    const newEncryptedPassword = await bcrypt.hash(req.body.newPassword, 10);
+    const updatePassword = await signUpModal.findByIdAndUpdate(
+      { _id: req.body.employeeId },
+      { $set: { password: newEncryptedPassword } }
+    );
+    if (updatePassword) {
+      const token = tokenGeneration();
+      res.status(201).send({ msg: "Passwor updated", token });
+    } else {
+      throw "update process failed";
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+};
+
 module.exports = {
   loginUser,
   signUpUser,
+  updatePassword,
 };
