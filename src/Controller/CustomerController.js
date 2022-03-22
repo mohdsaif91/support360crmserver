@@ -33,20 +33,20 @@ const getAdminCustomer = async (req, res) => {
     if (req.body.agentName) {
       reqData = {
         agentName: req.body.agentName,
-        createdAt: {
-          $gte: req.body.startDate,
-          $lte: req.body.endDate,
-        },
       };
-    } else {
+    } else if (req.body.employeeText) {
       reqData = {
-        createdAt: {
-          $gte: req.body.startDate,
-          $lte: req.body.endDate,
-        },
+        customerName: req.body.employeeText,
       };
     }
+    req.data = {
+      createdAt: {
+        $gte: req.body.startDate,
+        $lte: req.body.endDate,
+      },
+    };
 
+    console.log(reqData);
     const filterData = await CustomerModal.find({
       ...reqData,
     });

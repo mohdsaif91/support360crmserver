@@ -105,8 +105,12 @@ const getAllEmployee = async (req, res) => {
     if (!allEmployee) {
       res.status(404).send("Something went wrong");
     }
+    const customerName = await CustomerModal.distinct("customerName");
+    if (!customerName) {
+      res.status(404).send("Something went wrong");
+    }
     const token = tokenGeneration();
-    res.status(200).send({ allEmployee, token });
+    res.status(200).send({ allEmployee, token, customerName });
   } catch (error) {
     res.status(500).send(error);
   }
