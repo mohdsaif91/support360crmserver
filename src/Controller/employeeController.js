@@ -109,8 +109,12 @@ const getAllEmployee = async (req, res) => {
     if (!customerName) {
       res.status(404).send("Something went wrong");
     }
+    const customerNumber = await CustomerModal.distinct("phoneNumber");
+    if (!customerName) {
+      res.status(404).send("Something went wrong");
+    }
     const token = tokenGeneration();
-    res.status(200).send({ allEmployee, token, customerName });
+    res.status(200).send({ allEmployee, token, customerName, customerNumber });
   } catch (error) {
     res.status(500).send(error);
   }
@@ -129,8 +133,7 @@ const updateProfile = async (req, res) => {
       }
     );
   } catch (error) {
-    console.log(error);
-    // res.status(500).send(error);
+    res.status(500).send(error);
   }
 };
 
@@ -144,7 +147,6 @@ const removeEmployee = async (req, res) => {
     }
     res.status(200).send(req.body.id);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };

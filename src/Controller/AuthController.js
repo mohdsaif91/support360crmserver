@@ -14,7 +14,6 @@ const loginUser = async (req, res) => {
       res.status(404).send("No User Found !");
     }
     if (!bcrypt.compareSync(password, user.password)) {
-      console.log("authentication failed");
       res.status(401).send("No User found !");
     } else {
       const token = jwt.sign(
@@ -47,7 +46,6 @@ const signUpUser = async (req, res) => {
       res.status(201).send(req.body);
     });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -69,7 +67,6 @@ const updatePassword = async (req, res) => {
       throw "update process failed";
     }
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };

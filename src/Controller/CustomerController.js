@@ -29,26 +29,8 @@ const getCustomer = async (req, res) => {
 
 const getAdminCustomer = async (req, res) => {
   try {
-    let reqData = {};
-    if (req.body.agentName) {
-      reqData = {
-        agentName: req.body.agentName,
-      };
-    } else if (req.body.employeeText) {
-      reqData = {
-        customerName: req.body.employeeText,
-      };
-    }
-    req.data = {
-      createdAt: {
-        $gte: req.body.startDate,
-        $lte: req.body.endDate,
-      },
-    };
-
-    console.log(reqData);
     const filterData = await CustomerModal.find({
-      ...reqData,
+      ...req.body,
     });
     const token = tokenGeneration();
     res.status(200).send({ filterData, token });
