@@ -122,17 +122,15 @@ const getAllEmployee = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    await SignupModal.findByIdAndUpdate(
+    const updatedValue = await SignupModal.findByIdAndUpdate(
       { _id: req.body._id },
-      { $set: req.body },
-      (err, data) => {
-        if (err) throw "update operation failed";
-        if (data) {
-          res.status(200).send(req.body);
-        }
-      }
+      { $set: req.body }
     );
+    if (updatedValue) {
+      res.status(200).send(req.body);
+    }
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
